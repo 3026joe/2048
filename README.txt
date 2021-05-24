@@ -32,3 +32,12 @@ Version 1.1:
 		-> No score calculation
 		-> No New Game option
 		-> No display for new tiles >= 2048
+
+Version 1.2:
+	Issues fixed:
+		-> Improved modularity and cleaned up the code
+
+	Issues:
+		-> No score calculation
+		-> No New Game option
+		-> No display for new tiles >= 2048

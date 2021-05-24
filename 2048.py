@@ -3,11 +3,10 @@ import sys
 import random
 import copy
 
-#colours
-board_frame_colour = "#bbada0"
-foreground_colours = {0: "#d6cdc4", 2:"#464646", 4:"#464646", 8:"#ffffff", 16:"#ffffff", 32:"#ffffff", 64:"#ffffff", 128:"#ffffff", 256:"#ffffff", 512:"#ffffff", 1024:"#ffffff", 2048:"#ffffff", 4096:"#ffffff", 8192:"#ffffff", 16384:"#ffffff", 32768:"#ffffff", 65536:"#ffffff", 131072:"#ffffff"}
-background_colours = {0: "#d6cdc4", 2:"#eee4da", 4:"#ede0c8", 8:"#f2b179", 16:"#f59563", 32:"#f67c5f", 64:"#f65e3b", 128:"#edcf72", 256:"#edcc61", 512:"#edc850", 1024:"#edc53f", 2048:"#edc22e", 4096:"#464646", 8192:"#3d3d3d", 16384:"#19191a", 32768:"#111111", 65536:"#09090a", 131072:"#000000"}
-board_font = ("Courier", 20, "bold")
+board = []
+board_copy = []
+size = 4
+highest = 2
 
 def up(s, board):
 	for c in range(s):
@@ -136,79 +135,91 @@ def check_new_high(s, board, high):
 				return 1
 	return 0
 
-class make_gui():
-	def __init__(self, board):
-		self.board = board
-		self.board_copy = copy.deepcopy(board)
-		# print(self.board_copy)
-		# print(self.board)
-		print("initialization done")
+def update_board(gui_obj, key):
+	global board
+	global board_copy
+	global highest
+	if(key == "Up"):
+		board_copy = up(size, board_copy)
+	elif(key == "Down"):
+		board_copy = down(size, board_copy)
+	elif(key == "Left"):
+		board_copy = left(size, board_copy)
+	elif(key == "Right"):
+		board_copy = right(size, board_copy)
+	else:
+		print("SOMETHING'S WRONG")
+		exit(0)
+	if(board_copy == board):
+		return
+	board_copy = spawn(size, board_copy)
+	board = copy.deepcopy(board_copy)
+	# print(board_copy)
+	# print(board)	
+	if(check(size, board) == 0):
+		#add game over display
+		print("GAME OVER")
+		exit(0)
+	if(check_new_high(size, board, highest)):
+		#add new high tile display
+		print("new highest reached ", highest)
+		highest *= 2
+
+class gui():
+	def __init__(self):
+		#colours
+		self.board_frame_colour = "#bbada0"
+		self.foreground_colours = {0: "#d6cdc4", 2:"#464646", 4:"#464646", 8:"#ffffff", 16:"#ffffff", 32:"#ffffff", 64:"#ffffff", 128:"#ffffff", 256:"#ffffff", 512:"#ffffff", 1024:"#ffffff", 2048:"#ffffff", 4096:"#ffffff", 8192:"#ffffff", 16384:"#ffffff", 32768:"#ffffff", 65536:"#ffffff", 131072:"#ffffff"}
+		self.background_colours = {0: "#d6cdc4", 2:"#eee4da", 4:"#ede0c8", 8:"#f2b179", 16:"#f59563", 32:"#f67c5f", 64:"#f65e3b", 128:"#edcf72", 256:"#edcc61", 512:"#edc850", 1024:"#edc53f", 2048:"#edc22e", 4096:"#464646", 8192:"#3d3d3d", 16384:"#19191a", 32768:"#111111", 65536:"#09090a", 131072:"#000000"}
+		self.board_font = ("Courier", 20, "bold")
 		self.window = tk.Tk()
-		self.size = len(board)
 		self.widgets = []
-		self.highest = 2048
-		self.board_frame = tk.Frame(master = self.window, bg = board_frame_colour)
+		self.board_frame = tk.Frame(master = self.window, bg = self.board_frame_colour)
 		self.board_frame.pack(fill = tk.BOTH, expand = True)
 		self.create_board_gui()
-		self.window.bind("<Up>", self.update_board_gui)
-		self.window.bind("<Down>", self.update_board_gui)
-		self.window.bind("<Right>", self.update_board_gui)
-		self.window.bind("<Left>", self.update_board_gui)
+		self.window.bind("<Up>", self.key_press)
+		self.window.bind("<Down>", self.key_press)
+		self.window.bind("<Right>", self.key_press)
+		self.window.bind("<Left>", self.key_press)
 		self.window.mainloop()
 
 	def create_board_gui(self):
-		for i in range(self.size):
+		for i in range(size):
 			self.widgets.append([])
-			for j in range(self.size):
+			for j in range(size):
 				frame = tk.Frame(master = self.board_frame, borderwidth = 1, relief = tk.RAISED)
 				frame.grid(row = i, column = j, padx = 3, pady = 3)
-				label = tk.Label(master = frame, text = str(self.board[i][j]), font = board_font, fg = foreground_colours[self.board[i][j]], bg = background_colours[self.board[i][j]], width = 6, height = 3)
+				label = tk.Label(master = frame, text = str(board[i][j]), font = self.board_font, fg = self.foreground_colours[board[i][j]], bg = self.background_colours[board[i][j]], width = 6, height = 3)
 				label.pack(fill = tk.BOTH, expand = True)
 				self.widgets[i].append((frame, label))
 
-	def update_board_gui(self, event):
-		# print(self.board_copy)
-		# print(self.board)
-		if(event.keysym == "Up"):
-			self.board_copy = up(self.size, self.board_copy)
-		elif(event.keysym == "Down"):
-			self.board_copy = down(self.size, self.board_copy)
-		elif(event.keysym == "Left"):
-			self.board_copy = left(self.size, self.board_copy)
-		elif(event.keysym == "Right"):
-			self.board_copy = right(self.size, self.board_copy)
-		else:
-			# print("SOMETHING'S WRONG")
-			exit(0)
-		if(self.board_copy == self.board):
-			return
-		self.board_copy = spawn(self.size, self.board_copy)
-		self.board = copy.deepcopy(self.board_copy)
-		# print(self.board_copy)
-		# print(self.board)
-		if(check(self.size, self.board) == 0):
-			#add game over display
-			print("GAME OVER")
-			exit(0)
-		if(check_new_high(self.size, self.board, self.highest)):
-			#add new high tile display
-			print("new highest reached ", self.highest)
-			self.highest *= 2
-		for i in range(self.size):
-			for j in range(self.size):
-				self.widgets[i][j][1].config(text = str(self.board[i][j]), fg = foreground_colours[self.board[i][j]], bg = background_colours[self.board[i][j]])
+	def key_press(self, event):
+		key = event.keysym
+		update_board(self, key)
+		self.update_board_gui()
 
+	def update_board_gui(self):
+		global board
+		global board_copy
+		for i in range(size):
+			for j in range(size):
+				self.widgets[i][j][1].config(text = str(board[i][j]), fg = self.foreground_colours[board[i][j]], bg = self.background_colours[board[i][j]])
 
+def init_board():
+	global board
+	global board_copy
+	for i in range(size):
+		board.append([])
+		for j in range(size):
+			board[i].append(0)
+	spawn(size, board)
+	spawn(size, board)
+	board_copy = copy.deepcopy(board)
 
-size=4
-board=[]
-for i in range(size):
-	board.append([])
-	for j in range(size):
-		board[i].append(0)
+def main():
+	init_board()
+	print("initialization done")
+	gui_obj = gui()
 
-spawn(size,board)
-spawn(size,board)
-
-
-gui = make_gui(board)
+if __name__ == "__main__":
+	main()
