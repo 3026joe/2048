@@ -196,11 +196,7 @@ class make_gui():
 			self.highest *= 2
 		for i in range(self.size):
 			for j in range(self.size):
-				self.widgets[0][0][0].destroy()
-				self.widgets[0][0][1].destroy()
-				self.widgets[0].pop(0)
-			self.widgets.pop(0)
-		self.create_board_gui()
+				self.widgets[i][j][1].config(text = str(self.board[i][j]), fg = foreground_colours[self.board[i][j]], bg = background_colours[self.board[i][j]])
 
 
 

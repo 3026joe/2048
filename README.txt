@@ -23,3 +23,12 @@ Version 1.0:
 		-> No score calculation
 		-> No New Game option
 		-> No display for new tiles >= 2048
+
+Version 1.1:
+	Issues fixed:
+		-> Removed flicker by updating widgets instead of detroying and replacing
+
+	Issues:
+		-> No score calculation
+		-> No New Game option
+		-> No display for new tiles >= 2048
