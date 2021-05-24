@@ -6,7 +6,7 @@ import copy
 board = []
 board_copy = []
 size = 4
-highest = 2
+highest = 2048
 
 def up(s, board):
 	for c in range(s):
