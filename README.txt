@@ -53,3 +53,9 @@ Version 2.0:
 		-> No display for new tiles >= 2048
 		-> No Game Over display
 		-> No Instructions on start page
+
+Version 2.1:
+	Issues Fixed:
+		-> Added display for new tiles >= 2048
+		-> Added Game Over display
+		-> Added Instructions on start page
